@@ -1,0 +1,1 @@
+from notification.tests.test_models import *

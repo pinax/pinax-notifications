@@ -1,0 +1,5 @@
+*pyc
+local_settings.py
+_build
+_static
+coverage
