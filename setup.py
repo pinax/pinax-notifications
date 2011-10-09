@@ -5,7 +5,7 @@ setup(
     name="django-notification",
     version=__import__("notification").__version__,
     description="User notification management for the Django web framework",
-    long_description=open("docs/usage.txt").read(),
+    long_description=open("docs/usage.rst").read(),
     author="James Tauber",
     author_email="jtauber@jtauber.com",
     url="https://github.com/jtauber/django-notification",
