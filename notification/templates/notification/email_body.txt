@@ -1,6 +1,6 @@
-{% load i18n %}{% blocktrans %}You have received the following notice from {{ current_site }}:
+{% load i18n %}{% url notification_notices as notices_url %}{% blocktrans %}You have received the following notice from {{ current_site }}:
 
 {{ message }}
 
-To see other notices or change how you receive notifications, please go to {{ notices_url }}.
+To see other notices or change how you receive notifications, please go to {{ default_http_protocol }}://{{ current_site }}{{ notices_url }}
 {% endblocktrans %}

@@ -27,14 +27,14 @@ Here is an example::
 
     from django.conf import settings
     from django.utils.translation import ugettext_noop as _
-
+    
     if "notification" in settings.INSTALLED_APPS:
         from notification import models as notification
-
+        
         def create_notice_types(app, created_models, verbosity, **kwargs):
             notification.create_notice_type("friends_invite", _("Invitation Received"), _("you have received an invitation"))
             notification.create_notice_type("friends_accept", _("Acceptance Received"), _("an invitation you sent has been accepted"))
-
+            
         signals.post_syncdb.connect(create_notice_types, sender=notification)
     else:
         print "Skipping creation of NoticeTypes as notification app not found"
@@ -86,7 +86,7 @@ simple way to send out a notification, for example::
 One thing to note is that ``send`` is a proxy around either ``send_now`` or
 ``queue``. They all have the same signature::
 
-    send(users, label, extra_context, on_site)
+    send(users, label, extra_context)
 
 The parameters are:
 
@@ -95,8 +95,6 @@ The parameters are:
    type.
  * ``extra_content`` is a dictionary to add custom context entries to the
    template used to render to notification. This is optional.
- * ``on_site`` is a boolean flag to determine whether an ``Notice`` object is
-   created in the database.
 
 ``send_now`` vs. ``queue`` vs. ``send``
 ---------------------------------------
