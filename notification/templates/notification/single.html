@@ -1,0 +1,16 @@
+{% extends "notification/base.html" %}
+
+{% load humanize %}
+{% load i18n %}
+
+{% block body_id %}notification-single{% endblock %}
+
+{% block head_title %}{% trans "Notifications" %}{% endblock %}
+
+{% block body %}
+
+    {% if notice.sender %}<h1>{% trans "From" %} {{ notice.sender }}</h1>{% endif %}
+
+    <h2>{{ notice.added|date:"l, F j, Y" }}</h2>
+    {{ notice.message|linebreaks }}
+{% endblock %}

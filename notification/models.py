@@ -46,14 +46,14 @@ class NoticeType(models.Model):
 
 
 # if this gets updated, the create() method below needs to be as well...
-NOTICE_MEDIA = (
+NOTICE_MEDIA = getattr(settings, "NOTICE_MEDIA", (
     ("1", _("Email")),
-)
+))
 
 # how spam-sensitive is the medium
-NOTICE_MEDIA_DEFAULTS = {
+NOTICE_MEDIA_DEFAULTS = getattr(settings, "NOTICE_MEDIA_DEFAULTS", {
     "1": 2 # email
-}
+})
 
 class NoticeSetting(models.Model):
     """
