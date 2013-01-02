@@ -23,7 +23,7 @@ def feed_for_user(request):
 
 
 @login_required
-def notices(request):
+def notices(request, template_name="notification/notices.html"):
     """
     The main notices index view.
     
@@ -37,13 +37,13 @@ def notices(request):
     """
     notices = Notice.objects.notices_for(request.user, on_site=True)
     
-    return render_to_response("notification/notices.html", {
+    return render_to_response(template_name, {
         "notices": notices,
     }, context_instance=RequestContext(request))
 
 
 @login_required
-def notice_settings(request):
+def notice_settings(request, template_name="notification/notice_settings.html"):
     """
     The notice settings view.
     
@@ -90,14 +90,14 @@ def notice_settings(request):
         "rows": settings_table,
     }
     
-    return render_to_response("notification/notice_settings.html", {
+    return render_to_response(template_name, {
         "notice_types": notice_types,
         "notice_settings": notice_settings,
     }, context_instance=RequestContext(request))
 
 
 @login_required
-def single(request, id, mark_seen=True):
+def single(request, id, mark_seen=True, template_name="notification/single.html"):
     """
     Detail view for a single :model:`notification.Notice`.
     
@@ -119,7 +119,7 @@ def single(request, id, mark_seen=True):
         if mark_seen and notice.unseen:
             notice.unseen = False
             notice.save()
-        return render_to_response("notification/single.html", {
+        return render_to_response(template_name, {
             "notice": notice,
         }, context_instance=RequestContext(request))
     raise Http404
