@@ -257,7 +257,7 @@ def send_now(users, label, extra_context=None, on_site=True, sender=None):
     notification.send(user, "friends_invite_sent", {
         "spam": "eggs",
         "foo": "bar",
-    )
+    })
     
     You can pass in on_site=False to prevent the notice emitted from being
     displayed on the site.

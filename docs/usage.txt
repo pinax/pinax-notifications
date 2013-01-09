@@ -26,6 +26,7 @@ One good way to automatically do this notice type creation is in a
 Here is an example::
 
     from django.conf import settings
+    from django.db.models import signals
     from django.utils.translation import ugettext_noop as _
 
     if "notification" in settings.INSTALLED_APPS:
@@ -64,7 +65,7 @@ For example, ``notification/friends_invite/notice.html`` might contain::
     {% load i18n %}{% url invitations as invitation_page %}{% url profile_detail username=invitation.from_user.username as user_url %}
     {% blocktrans with invitation.from_user as invitation_from_user %}<a href="{{ user_url }}">{{ invitation_from_user }}</a> has requested to add you as a friend (see <a href="{{ invitation_page }}">invitations</a>){% endblocktrans %}
 
-and ``notification/friends_full.txt`` might contain::
+and ``notification/friends/full.txt`` might contain::
     
     {% load i18n %}{% url invitations as invitation_page %}{% blocktrans with invitation.from_user as invitation_from_user %}{{ invitation_from_user }} has requested to add you as a friend. You can accept their invitation at:
     
