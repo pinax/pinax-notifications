@@ -14,7 +14,7 @@ NOTIFICATION_BACKENDS
 **Default**::
     
     [
-        ("email", "notification.backends.email.EmailBackend"),`
+        ("email", "notification.backends.email.EmailBackend"),
     ]
 
 TODO: Describe usage. Look at Pinax
