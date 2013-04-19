@@ -1,11 +1,13 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
+from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
 
 from notification.models import NoticeSetting, NoticeType, NOTICE_MEDIA
 
+NOTIFICATION_UNCONFIGURABLE_MEDIA = getattr(settings, 'NOTIFICATION_UNCONFIGURABLE_MEDIA', [])
 
 @login_required
 def notice_settings(request):
@@ -29,9 +31,18 @@ def notice_settings(request):
     """
     notice_types = NoticeType.objects.all()
     settings_table = []
+    
+    notice_media = []
+    
+    for medium_id, medium_display in NOTICE_MEDIA:
+        if medium_display in NOTIFICATION_UNCONFIGURABLE_MEDIA:
+            continue
+        else:
+            notice_media.append((medium_id, medium_display))
+    
     for notice_type in notice_types:
         settings_row = []
-        for medium_id, medium_display in NOTICE_MEDIA:
+        for medium_id, medium_display in notice_media:
             form_label = "%s_%s" % (notice_type.label, medium_id)
             setting = NoticeSetting.for_user(request.user, notice_type, medium_id)
             if request.method == "POST":
@@ -51,7 +62,7 @@ def notice_settings(request):
         return HttpResponseRedirect(next_page)
     
     notice_settings = {
-        "column_headers": [medium_display for medium_id, medium_display in NOTICE_MEDIA],
+        "column_headers": [medium_display for medium_id, medium_display in notice_media],
         "rows": settings_table,
     }
     

@@ -20,6 +20,16 @@ NOTIFICATION_BACKENDS
 TODO: Describe usage. Look at Pinax
 
 
+NOTIFICATION_UNCONFIGURABLE_MEDIA
+---------------------------------
+
+**Default**::
+    
+    []
+
+A list of backends (see above) which the user cannot configure using the `notifications_settings` view's form.
+
+
 DEFAULT_HTTP_PROTOCOL
 ---------------------
 
