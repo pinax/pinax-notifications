@@ -24,6 +24,10 @@ class LanguageStoreNotAvailable(Exception):
     pass
 
 
+def create_notice_type(label, display, description, **kwargs):
+    NoticeType.create(label, display, description, **kwargs)
+
+
 class NoticeType(models.Model):
     
     label = models.CharField(_("label"), max_length=40)
