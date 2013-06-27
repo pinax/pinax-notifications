@@ -7,7 +7,14 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language, activate
 
-from django.contrib.auth.models import User
+# support custom user models in django 1.5+
+# https://docs.djangoproject.com/en/1.5/topics/auth/customizing/#substituting-a-custom-user-model
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from notification import backends
 

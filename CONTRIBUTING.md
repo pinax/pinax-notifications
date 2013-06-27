@@ -94,7 +94,14 @@ Here is an example of these rules applied:
     from django.utils import timezone
     from django.utils.translation import ugettext_lazy as _
     
-    from django.contrib.auth.models import User
+    # support custom user models in django 1.5+
+    # https://docs.djangoproject.com/en/1.5/topics/auth/customizing/#substituting-a-custom-user-model
+    try:
+        from django.contrib.auth import get_user_model
+    except ImportError:
+        from django.contrib.auth.models import User
+    else:
+        User = get_user_model()
     
     # third set of imports are external apps (if applicable)
     from tagging.fields import TagField

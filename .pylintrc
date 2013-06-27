@@ -31,6 +31,9 @@ method-rgx=[a-z_][a-z0-9_]{2,60}$
 # Regular expression which should only match correct instance attribute names
 attr-rgx=[a-z_][a-z0-9_]{2,60}$
 
+# Regular Expression which should only match correct constant variable names
+const-rgx=[A-Za-z_][A-Za-z0-9_]{2,60}$
+
 [DESIGN]
 max-locals=20
 

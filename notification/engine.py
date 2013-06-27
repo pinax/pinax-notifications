@@ -7,8 +7,16 @@ import cPickle as pickle
 
 from django.conf import settings
 from django.core.mail import mail_admins
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+
+# support custom user models in django 1.5+
+# https://docs.djangoproject.com/en/1.5/topics/auth/customizing/#substituting-a-custom-user-model
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
 
 from notification.lockfile import FileLock, AlreadyLocked, LockTimeout
 from notification.models import NoticeQueueBatch
