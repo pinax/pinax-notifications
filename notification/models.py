@@ -29,26 +29,26 @@ def create_notice_type(label, display, description, **kwargs):
 
 
 class NoticeType(models.Model):
-    
+
     label = models.CharField(_("label"), max_length=40)
     display = models.CharField(_("display"), max_length=50)
     description = models.CharField(_("description"), max_length=100)
-    
+
     # by default only on for media with sensitivity less than or equal to this number
     default = models.IntegerField(_("default"))
-    
+
     def __unicode__(self):
         return self.label
-    
+
     class Meta:
         verbose_name = _("notice type")
         verbose_name_plural = _("notice types")
-    
+
     @classmethod
     def create(cls, label, display, description, default=2, verbosity=1):
         """
         Creates a new NoticeType.
-        
+
         This is intended to be used by other apps as a post_syncdb manangement step.
         """
         try:
@@ -66,11 +66,11 @@ class NoticeType(models.Model):
             if updated:
                 notice_type.save()
                 if verbosity > 1:
-                    print "Updated %s NoticeType" % label
+                    print ("Updated %s NoticeType" % label)
         except cls.DoesNotExist:
             cls(label=label, display=display, description=description, default=default).save()
             if verbosity > 1:
-                print "Created %s NoticeType" % label
+                print ("Created %s NoticeType" % label)
 
 
 class NoticeSetting(models.Model):
@@ -78,17 +78,17 @@ class NoticeSetting(models.Model):
     Indicates, for a given user, whether to send notifications
     of a given type to a given medium.
     """
-    
+
     user = models.ForeignKey(User, verbose_name=_("user"))
     notice_type = models.ForeignKey(NoticeType, verbose_name=_("notice type"))
     medium = models.CharField(_("medium"), max_length=1, choices=NOTICE_MEDIA)
     send = models.BooleanField(_("send"))
-    
+
     class Meta:
         verbose_name = _("notice setting")
         verbose_name_plural = _("notice settings")
         unique_together = ("user", "notice_type", "medium")
-    
+
     @classmethod
     def for_user(cls, user, notice_type, medium):
         try:
@@ -130,9 +130,9 @@ def get_notification_language(user):
 def send_now(users, label, extra_context=None, sender=None):
     """
     Creates a new notice.
-    
+
     This is intended to be how other apps create new notices.
-    
+
     notification.send(user, "friends_invite_sent", {
         "spam": "eggs",
         "foo": "bar",
@@ -141,11 +141,11 @@ def send_now(users, label, extra_context=None, sender=None):
     sent = False
     if extra_context is None:
         extra_context = {}
-    
+
     notice_type = NoticeType.objects.get(label=label)
-    
+
     current_language = get_language()
-    
+
     for user in users:
         # get user language for user from language store defined in
         # NOTIFICATION_LANGUAGE_MODULE setting
@@ -153,16 +153,16 @@ def send_now(users, label, extra_context=None, sender=None):
             language = get_notification_language(user)
         except LanguageStoreNotAvailable:
             language = None
-        
+
         if language is not None:
             # activate the user's language
             activate(language)
-        
+
         for backend in NOTIFICATION_BACKENDS.values():
             if backend.can_send(user, notice_type):
                 backend.deliver(user, sender, notice_type, extra_context)
                 sent = True
-    
+
     # reset environment to original language
     activate(current_language)
     return sent

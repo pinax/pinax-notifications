@@ -32,7 +32,7 @@ def load_backends():
             # import the module and get the module from sys.modules
             __import__(backend_mod)
             mod = sys.modules[backend_mod]
-        except ImportError, e:
+        except ImportError as e:
             raise exceptions.ImproperlyConfigured(
                 "Error importing notification backend {}: \"{}\"".format(backend_mod, e)
             )
