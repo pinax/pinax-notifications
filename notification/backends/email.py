@@ -40,3 +40,9 @@ class EmailBackend(backends.BaseBackend):
         }, context)
 
         send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [recipient.email])
+        from notification import models as notification
+        notification.Notice.objects.create(recipient=recipient,
+                                           notice_type=notice_type,
+                                           sender=sender,
+                                           message=ugettext(notice_type.display),
+                                           on_site=True)
