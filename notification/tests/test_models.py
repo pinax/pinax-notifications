@@ -11,6 +11,7 @@ from ..models import NoticeType, NoticeSetting, NoticeQueueBatch
 from ..models import LanguageStoreNotAvailable
 from ..models import get_notification_language, create_notice_type, send_now, send, queue
 from ..compat import get_user_model
+from ..engine import send__all_grouped
 
 from .models import Language
 
@@ -106,6 +107,19 @@ class TestProcedures(BaseTest):
 
         send(users, "label", queue=True)
         self.assertEqual(NoticeQueueBatch.objects.count(), 1)
+        batch = NoticeQueueBatch.objects.all()[0]
+        notices = pickle.loads(base64.b64decode(batch.pickled_data))
+        self.assertEqual(len(notices), 2)
+
+    @override_settings(SITE_ID=1)
+    def test_group_send(self):
+        users = [self.user, self.user2]
+        send(users, "label", queue=True)
+        send(users, "label", queue=True)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(NoticeQueueBatch.objects.count(), 2)
+        send__all_grouped()
+        self.assertEqual(len(mail.outbox), 2)
         batch = NoticeQueueBatch.objects.all()[0]
         notices = pickle.loads(base64.b64decode(batch.pickled_data))
         self.assertEqual(len(notices), 2)

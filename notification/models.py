@@ -174,6 +174,49 @@ def send_now(users, label, extra_context=None, sender=None):
     return sent
 
 
+def send_now_grouped(user, notice_list, extra_context=None, sender=None):
+    """
+    Creates a new grouped notice.
+
+    This is intended to be how other apps create new notices.
+
+    notification.send(user, "friends_invite_sent", {
+        "spam": "eggs",
+        "foo": "bar",
+    )
+    """
+    sent = False
+    if extra_context is None:
+        extra_context = {}
+
+    #notice_type = NoticeType.objects.get(label=label)
+
+    current_language = get_language()
+
+    # get user language for user from language store defined in
+    # NOTIFICATION_LANGUAGE_MODULE setting
+    try:
+        language = get_notification_language(user)
+    except LanguageStoreNotAvailable:
+        language = None
+
+    if language is not None:
+        # activate the user's language
+        activate(language)
+
+    for backend in NOTIFICATION_BACKENDS.values():
+        final_notice_list = []
+        for notice in notice_list:
+            notice_type = NoticeType.objects.get(label=notice[1])
+            if backend.can_send(user, notice_type):
+                final_notice_list.append((notice[0], notice_type, notice[2], notice[3]))
+        backend.group_deliver(user, sender, final_notice_list, extra_context)
+        sent = True
+
+    # reset environment to original language
+    activate(current_language)
+    return sent
+
 def send(*args, **kwargs):
     """
     A basic interface around both queue and send_now. This honors a global
@@ -183,6 +226,7 @@ def send(*args, **kwargs):
     """
     queue_flag = kwargs.pop("queue", False)
     now_flag = kwargs.pop("now", False)
+    #TODO pop group
     assert not (queue_flag and now_flag), "'queue' and 'now' cannot both be True."
     if queue_flag:
         return queue(*args, **kwargs)

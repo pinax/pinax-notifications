@@ -28,6 +28,12 @@ class BaseBackend(object):
         """
         raise NotImplementedError()
 
+    def group_deliver(self, recipient, sender, notice_type, extra_context):
+        """
+        Deliver a notification to the given recipient.
+        """
+        raise NotImplementedError()
+
     def get_formatted_messages(self, formats, label, context):
         """
         Returns a dictionary with the format identifier as the key. The values are

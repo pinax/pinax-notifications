@@ -1,0 +1,6 @@
+{% load i18n %}{% load url from future %}{% url "notification_notices" as notices_url %}{% blocktrans %}You have received the following notices from {{ current_site }}{% endblocktrans %}:
+{% for message in messages %}
+{{ message }}
+-------------
+{% endfor %}
+{% blocktrans %}To see other notices or change how you receive notifications, please go to {{ default_http_protocol }}://{{ current_site }}{{ notices_url }}{% endblocktrans %}

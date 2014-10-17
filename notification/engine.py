@@ -95,3 +95,69 @@ def send_all(*args):
     logging.info("")
     logging.info("{} batches, {} sent".format(batches, sent,))
     logging.info("done in {:.2f} seconds".format(time.time() - start_time))
+
+
+def send__all_grouped(*args):
+    lock = acquire_lock(*args)
+    batches, sent, sent_actual = 0, 0, 0
+    start_time = time.time()
+    grouped = {}
+    grouped_batches = {}
+    try:
+        for queued_batch in NoticeQueueBatch.objects.all():
+            notices = pickle.loads(base64.b64decode(queued_batch.pickled_data))
+            for user, label, extra_context, sender in notices:
+                try:
+                    user = User.objects.get(pk=user)
+                    logging.info("grouping notice {} to {}".format(label, user))
+                    if user in grouped:
+                        grouped[user].append((user.id, label, extra_context, sender))
+                    else:
+                        grouped[user] = [(user.id, label, extra_context, sender)]
+                    # call this once per user to be atomic and allow for logging to
+                    # accurately show how long each takes.
+                except User.DoesNotExist:
+                    # Ignore deleted users, just warn about them
+                    logging.warning(
+                        "not emitting notice {} to user {} since it does not exist".format(
+                            label,
+                            user)
+                    )
+            queued_batch.delete()
+        for user in grouped:
+            notice_list = grouped[user]
+            user_batch = NoticeQueueBatch(pickled_data=base64.b64encode(pickle.dumps(notice_list)))
+            user_batch.save()
+            grouped_batches[user] = user_batch
+        for user in grouped:
+            notice_list = grouped[user]
+            if notification.send_now_grouped(user, notice_list, extra_context, user):
+                sent_actual += 1
+            grouped_batches[user].delete()
+            batches += 1
+        emitted_notices.send(
+            sender=NoticeQueueBatch,
+            batches=batches,
+            sent=sent,
+            sent_actual=sent_actual,
+            run_time="%.2f seconds" % (time.time() - start_time)
+        )
+    except Exception:  # pylint: disable-msg=W0703
+        # get the exception
+        _, e, _ = sys.exc_info()
+        # email people
+        current_site = Site.objects.get_current()
+        subject = "[{} emit_notices] {}".format(current_site.name, e)
+        message = "\n".join(
+            traceback.format_exception(*sys.exc_info())  # pylint: disable-msg=W0142
+        )
+        mail_admins(subject, message, fail_silently=True)
+        # log it as critical
+        logging.critical("an exception occurred: {}".format(e))
+    finally:
+        logging.debug("releasing lock...")
+        lock.release()
+        logging.debug("released.")
+    logging.info("")
+    logging.info("{} batches, {} sent".format(batches, sent,))
+    logging.info("done in {:.2f} seconds".format(time.time() - start_time))
