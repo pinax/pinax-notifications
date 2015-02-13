@@ -10,6 +10,7 @@ from .base import BaseBackend  # noqa
 # mostly for backend compatibility
 default_backends = [
     ("email", "notification.backends.email.EmailBackend"),
+    ("sns", "notification.backends.sns.SnsBackend"),
 ]
 
 
