@@ -86,7 +86,7 @@ class NoticeSetting(models.Model):
 
     user = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("user"))
     notice_type = models.ForeignKey(NoticeType, verbose_name=_("notice type"))
-    medium = models.CharField(_("medium"), max_length=1, choices=NOTICE_MEDIA)
+    medium = models.IntegerField(_("medium"), choices=NOTICE_MEDIA)
     send = models.BooleanField(_("send"), default=False)
 
     class Meta:
