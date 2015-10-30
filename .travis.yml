@@ -1,16 +1,17 @@
 language: python
-python:
-  - "2.7"
-  - "3.3"
-  - "3.4"
 env:
-  - DJANGO=1.7
-  - DJANGO=1.8
-  - DJANGO=master
+    - TOX_ENV=py27-1.7
+    - TOX_ENV=py27-1.8
+    - TOX_ENV=py27-master
+    - TOX_ENV=py33-1.7
+    - TOX_ENV=py33-1.8
+    - TOX_ENV=py34-1.7
+    - TOX_ENV=py34-1.8
+    - TOX_ENV=py34-master
 install:
   - pip install tox coveralls
 script:
-  - tox -e py${TRAVIS_PYTHON_VERSION//[.]/}-$DJANGO
+  - tox -e $TOX_ENV
 after_success:
   - coveralls
 notifications:
