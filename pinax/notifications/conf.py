@@ -66,8 +66,8 @@ class PinaxNotificationsAppConf(AppConf):
                 raise ImproperlyConfigured(
                     "NOTIFICATION_BACKENDS does not contain enough data."
                 )
-            backend_instance = load_path_attr(backend_path)(medium_id, spam_sensitivity)
-            backends.append(((medium_id, label), backend_instance))
+            backend_instance = load_path_attr(backend_path)(label, spam_sensitivity)
+            backends.append(((label, label), backend_instance))
         return dict(backends)
 
     def configure_get_language_model(self, value):
