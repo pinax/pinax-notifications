@@ -67,7 +67,7 @@ class TestNoticeSetting(BaseTest):
         )
 
         # test default fallback
-        NoticeSetting.for_user(self.user2, self.notice_type, email_id, scoping=None)
+        NoticeSetting.objects.create(user=self.user2, notice_type=self.notice_type, medium=email_id, send=True, scoping=None)
         ns2 = NoticeSetting.objects.get(user=self.user2, notice_type=self.notice_type, medium=email_id)
         self.assertTrue(ns2.send)
 
@@ -77,6 +77,9 @@ class TestProcedures(BaseTest):
         super(TestProcedures, self).setUp()
         self.lang = Language.objects.create(user=self.user, language="en_US")
         mail.outbox = []
+        email_id = get_backend_id("email")
+        NoticeSetting.objects.create(user=self.user, notice_type=self.notice_type, medium=email_id, send=True, scoping=None)
+        NoticeSetting.objects.create(user=self.user2, notice_type=self.notice_type, medium=email_id, send=True, scoping=None)
 
     def tearDown(self):
         super(TestProcedures, self).tearDown()

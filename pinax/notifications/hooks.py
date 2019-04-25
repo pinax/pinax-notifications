@@ -25,7 +25,7 @@ class DefaultHookSet(object):
         try:
             return user.noticesetting_set.get(**kwargs)
         except ObjectDoesNotExist:
-            _, NOTICE_MEDIA_DEFAULTS = load_media_defaults()
+            # _, NOTICE_MEDIA_DEFAULTS = load_media_defaults()
             if scoping is None:
                 kwargs.pop("scoping_content_type__isnull")
                 kwargs.pop("scoping_object_id__isnull")
@@ -33,9 +33,10 @@ class DefaultHookSet(object):
                     "scoping_content_type": None,
                     "scoping_object_id": None
                 })
-            default = (NOTICE_MEDIA_DEFAULTS[str(medium)] <= notice_type.default)
-            kwargs.update({"send": default})
-            setting = user.noticesetting_set.create(**kwargs)
+            default = False
+            kwargs.update({"send": default, "user": user})
+            from .models import NoticeSetting
+            setting = NoticeSetting(**kwargs)
             return setting
 
 

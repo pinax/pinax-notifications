@@ -37,11 +37,12 @@ class NoticeSettingsView(TemplateView):
         _, pk, medium_id = label.split("-")
         notice_type = NoticeType.objects.get(pk=pk)
         setting = self.setting_for_user(notice_type, medium_id)
-        if val == "on":
-            setting.send = True
-        else:
-            setting.send = False
-        setting.save()
+        if setting.pk:
+            if val == "on":
+                setting.send = True
+            else:
+                setting.send = False
+            setting.save()
 
     def settings_table(self):
         notice_types = NoticeType.objects.all()
@@ -50,10 +51,11 @@ class NoticeSettingsView(TemplateView):
             row = []
             for medium_id, medium_display in NOTICE_MEDIA:
                 setting = self.setting_for_user(notice_type, medium_id)
-                row.append((
-                    self.form_label(notice_type, medium_id),
-                    setting.send)
-                )
+                if setting.pk:
+                    row.append((
+                        self.form_label(notice_type, medium_id),
+                        setting.send)
+                    )
             table.append({"notice_type": notice_type, "cells": row})
         return table
 
