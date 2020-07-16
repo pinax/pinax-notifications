@@ -526,9 +526,13 @@ urlpatterns = [
 * Add PyPi-compatible long description
 
 ### 4.0
+* _*BI*_: Change app label from `notifications` to `pinax_notifications`. This
+  changes the default name of the database tables. You may need to rename your
+  existing database tables, and check any incoming foreign keys to avoid losing
+  data.
 * _*BI*_: To support changes to `render_to_string` in Django 1.10 and above,
-your notice `full.txt` and `short.txt` plain text templates must now be autoescaped explicitly using the
-`{% autoescape %}` tag.
+your notice `full.txt` and `short.txt` plain text templates must now disable autoescaping explicitly using the
+`{% autoescape off %}` tag.
 ([#68](https://github.com/pinax/pinax-notifications/issues/68#issuecomment-258383323)) 
 
 ### 3.0.1
