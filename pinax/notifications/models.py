@@ -7,7 +7,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.translation import activate, get_language
-from django.utils.translation import ugettext_lazy as _
+# from django.utils.translation import ugettext_lazy as _  # this form of translation is deprecated
+from django.utils.translation import gettext_lazy as _ # This is more compatible with django 4.00
 
 from .conf import settings
 from .hooks import hookset
