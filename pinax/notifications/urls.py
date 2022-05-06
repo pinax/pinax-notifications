@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.urls import path
 
 from .views import NoticeSettingsView
 
 app_name = "pinax_notifications"
 
 urlpatterns = [
-    url(r"^settings/$", NoticeSettingsView.as_view(), name="notice_settings"),
+    path("settings/", NoticeSettingsView.as_view(), name="notice_settings"),
 ]
