@@ -100,7 +100,7 @@ Add `pinax.notifications.urls` to your project urlpatterns:
 ```python
 urlpatterns = [
     # other urls
-    url(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
+    re_path(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
 ]
 ```
 
@@ -472,14 +472,14 @@ Then override the url:
 ```python
 # urls.py
 
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import TeamNoticeSettingsView
 
 
 urlpatterns = [
     # other urls
-    url(r"^notifications/settings/$", TeamNoticeSettingsView.as_view(), name="notification_notice_settings"),
+    re_path(r"^notifications/settings/$", TeamNoticeSettingsView.as_view(), name="notification_notice_settings"),
 ]
 ```
 

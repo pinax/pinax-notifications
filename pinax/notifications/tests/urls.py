@@ -1,5 +1,5 @@
-from django.conf.urls import include, url
+from django.urls import include, re_path
 
 urlpatterns = [
-    url(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
+    re_path(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
 ]
