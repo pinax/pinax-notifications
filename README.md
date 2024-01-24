@@ -100,7 +100,7 @@ Add `pinax.notifications.urls` to your project urlpatterns:
 ```python
 urlpatterns = [
     # other urls
-    url(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
+    re_path(r"^notifications/", include("pinax.notifications.urls", namespace="pinax_notifications")),
 ]
 ```
 
@@ -139,7 +139,7 @@ One way to create notice types is using a custom `AppConfig`. Here is an example
 # myapp/signals/handlers.py
 
 from django.conf import settings
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import gettext_noop as _
 
 def create_notice_types(sender, **kwargs): 
     if "pinax.notifications" in settings.INSTALLED_APPS:
@@ -155,7 +155,7 @@ Notice that the code is wrapped in a conditional clause so if
 `pinax-notifications` is not installed, your app will proceed anyway.
 
 Note that the display and description arguments are marked for translation by
-using ugettext_noop. That will enable you to use Django's makemessages
+using gettext_noop. That will enable you to use Django's makemessages
 management command and use `pinax-notifications` i18n capabilities.
 
 ```python
@@ -472,14 +472,14 @@ Then override the url:
 ```python
 # urls.py
 
-from django.conf.urls import url
+from django.urls import re_path
 
 from .views import TeamNoticeSettingsView
 
 
 urlpatterns = [
     # other urls
-    url(r"^notifications/settings/$", TeamNoticeSettingsView.as_view(), name="notification_notice_settings"),
+    re_path(r"^notifications/settings/$", TeamNoticeSettingsView.as_view(), name="notification_notice_settings"),
 ]
 ```
 
